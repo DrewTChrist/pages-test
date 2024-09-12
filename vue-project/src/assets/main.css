@@ -1,5 +1,9 @@
 @import './base.css';
 
+html {
+  overflow-y: scroll;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -16,20 +20,20 @@ a,
 }
 
 @media (hover: hover) {
-  a:hover {
+  nav li:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
   }
 }
 
 @media (min-width: 1024px) {
-  body {
+  /* body {
     display: flex;
     place-items: center;
-  }
+  } */
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    grid-template-columns: 1fr 4fr;
+    padding: 2rem 2rem;
   }
 }
