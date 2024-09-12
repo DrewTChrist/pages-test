@@ -2,12 +2,12 @@
 import { ref } from 'vue'
 import axios from 'axios';
 
-const apiKey = ref(null)
+const apiKey = ref('')
 const error = ref(null)
-const data = ref(null)
+const profile = ref(null)
 
-async function getLookup() {
-  data.value = null
+async function getProfile() {
+  profile.value = null
   error.value = null
   if (apiKey.value) {
     await axios({
@@ -18,7 +18,7 @@ async function getLookup() {
         if (response.data.error) {
           error.value = response.data.error.error
         } else {
-          data.value = response.data
+          profile.value = response.data
         }
       })
       .catch((err) => {
@@ -35,8 +35,8 @@ async function getLookup() {
   <div class="item">
     <h3>Torn API Example</h3>
     <div>
-      <input type="text" v-model="apiKey" />
-      <input @click="getLookup" type="button" value="Connect" />
+      <input type="text" v-model="apiKey" placeholder="API Key" />
+      <input :disabled="apiKey.length == 0" @click="getProfile" type="button" value="Connect" />
     </div>
     <div v-if="error" class="alert">
       <div class="alert-inner">
@@ -45,12 +45,21 @@ async function getLookup() {
       </div>
     </div>
     <div class="sections">
-      <div class="section">
+      <div v-if="profile" class="section">
         <h3>Profile</h3>
-        <img :src="data.profile_image"/>
-        <p>Rank: {{ data.rank }}</p>
-        <p>Level: {{ data.level }}</p>
-        <p>Honor: {{ data.honor }}</p>
+        <img :src="profile.profile_image" height="100" width="75" />
+        <p>Name: {{ profile.name }}</p>
+        <p>Rank: {{ profile.rank }}</p>
+        <p>Level: {{ profile.level }}</p>
+        <p>Honor: {{ profile.honor }}</p>
+      </div>
+      <div v-else class="section">
+        <h3>Profile</h3>
+        <img height="100" width="75" />
+        <p>Name:<span class="placeholder"></span></p>
+        <p>Rank:<span class="placeholder"></span></p>
+        <p>Level:<span class="placeholder"></span></p>
+        <p>Honor:<span class="placeholder"></span></p>
       </div>
       <div class="section">
         <h3>Money</h3>
@@ -59,39 +68,57 @@ async function getLookup() {
         <h3>Networth</h3>
       </div>
     </div>
-    <p v-if="data">
-      {{ data }}
-    </p>
   </div>
 </template>
 
 <style scoped>
 input[type="text"] {
-  padding: 0.3rem;
+  padding: 0.4rem;
+  border-radius: 5px;
+  /* border: 1px solid; */
+  border: 0;
+  outline-color: var(--vt-c-divider-dark-1);
+  outline-style: solid;
+  outline-width: thin;
+}
+
+input[type="text"]:focus {
+  outline-color: var(--vt-c-divider-dark-1);
+  outline-style: solid;
+  outline-width: medium;
+  /* padding: 0.4rem;
+  border-radius: 5px;
+  border: 1px solid; */
 }
 
 input[type="button"] {
   border: 0;
-  background-color: hsl(221, 88%, 41%);
+  background-color: hsl(221, 100%, 63%);
   border-radius: 5px;
   padding: 0.4rem;
+  margin-left: 1rem;
   color: var(--color-background)
 }
 
 input[type="button"]:hover {
-  background-color: hsl(221, 51%, 55%);
+  background-color: hsl(221, 100%, 38%);
+}
+
+input[type="button"]:disabled {
+  background-color: hsl(0, 0%, 61%);
 }
 
 .sections {
-  display: flex;
+  display: grid;
 }
 
 .section {
+  width: 100%;
   border: 1px solid;
   border-color: var(--vt-c-divider-dark-1);
   border-radius: 5px;
-  margin-top: 1rem;
-  padding: 1rem; 
+  margin: 1rem 0rem 0rem 0rem;
+  padding: 1rem;
 }
 
 .alert {
@@ -109,5 +136,19 @@ input[type="button"]:hover {
 
 .alert-header {
   padding-right: 0.3rem;
+}
+
+@media (min-width: 1024px) {
+  .sections {
+    display: flex;
+  }
+
+  .section {
+    margin: 1rem 0rem 0rem 1rem;
+  }
+
+  .section:first-of-type {
+    margin: 1rem 0rem 0rem 0rem;
+  }
 }
 </style>
